@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>mb_lwip</name>
-	<comment>Created by SDK v2015.4. mb_lwip_bsp - microblaze_0</comment>
+	<comment></comment>
 	<projects>
 		<project>mb_lwip_bsp</project>
 	</projects>
@@ -27,7 +27,7 @@
 		<link>
 			<name>src/lwip</name>
 			<type>2</type>
-			<location>Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/lwip/lwip</location>
+			<location>C:/work/git/FPGANow/MicroBlaze_lwIP/xilinx_mb_lwip/lwip/lwip</location>
 		</link>
 	</linkedResources>
 </projectDescription>

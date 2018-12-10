@@ -121,7 +121,7 @@ static void tapif_thread(void *arg);
 /*-----------------------------------------------------------------------------------*/
 static void low_level_init(struct netif *netif)
 {
-    print(" - low_level_init.start\n");
+    printf(" - low_level_init.start\n");
 //	struct tapif *tapif;
 
 	int ret;
@@ -148,7 +148,7 @@ static void low_level_init(struct netif *netif)
 	// Send a signal to turn on the PHY?
 	// Or just nothing?
 
-	print("    calling netif_set_link_up\n");
+	printf("    calling netif_set_link_up\n");
 	netif_set_link_up(netif);
 
 //  if (preconfigured_tapif == NULL) {
@@ -201,88 +201,88 @@ static void low_level_init(struct netif *netif)
 static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
 //	struct tapif *tapif = (struct tapif *) netif->state;
-	static char buf[1514];
-	static int outLen = 0;
+    static char buf[1514];
+    static int outLen = 0;
 
-	printf("\n============================================================");
-	printf("\n\tlow_level_output:");
-	printf("\n------------------------------------------------------------");
+    printf("\n============================================================");
+    printf("\n\tlow_level_output:");
+    printf("\n------------------------------------------------------------");
 
-	if(p == NULL)
-	{
-		printf("p == NULL\n");
-		return ERR_OK;
-	}
+    if(p == NULL)
+    {
+        printf("p == NULL\n");
+        return ERR_OK;
+    }
 
-	outLen = p->tot_len;
-	printf("\n\tSending out a packet of length: %d", outLen);
-	if( outLen % 4 != 0)
-	{
-		int rem = outLen % 4;
-		printf("\n\tREMAINDER of %d bytes", rem);
-		outLen += rem;
+    outLen = p->tot_len;
+    printf("\n\tSending out a packet of length: %d", outLen);
+    if( outLen % 4 != 0)
+    {
+        int rem = outLen % 4;
+        printf("\n\tREMAINDER of %d bytes", rem);
+        outLen += rem;
 
-		// Make the last 4 bytes 0
-		buf[outLen - 1] = 0;
-		buf[outLen - 2] = 0;
-		buf[outLen - 3] = 0;
-		buf[outLen - 4] = 0;
-	}
+        // Make the last 4 bytes 0
+        buf[outLen - 1] = 0;
+        buf[outLen - 2] = 0;
+        buf[outLen - 3] = 0;
+        buf[outLen - 4] = 0;
+    }
 
-	/* initiate transfer(); */
-	pbuf_copy_partial(p, buf, p->tot_len, 0);
-	printf("\n\tAfter calling pbuf_copy_partial");
+    /* initiate transfer(); */
+    pbuf_copy_partial(p, buf, p->tot_len, 0);
+    printf("\n\tAfter calling pbuf_copy_partial");
 
-	XGpio_DiscreteWrite(&gpio_2, 2, 0xDDDD0001);
+    XGpio_DiscreteWrite(&gpio_2, 2, 0xDDDD0001);
 
-	// transfer p->tot_len from buf to FPGA
-	if (XLlFifo_iTxVacancy(&fifo_1))
-	{
-		printf("\n\tThere exists a vacancy in the fifo\n  ");
+    // transfer p->tot_len from buf to FPGA
+    if (XLlFifo_iTxVacancy(&fifo_1))
+    {
+        printf("\n\tThere exists a vacancy in the fifo\n  ");
 
-		int i = 0;
-		XGpio_DiscreteWrite(&gpio_2, 2, 0xDDDD0002);
-		XGpio_DiscreteWrite(&gpio_2, 2, outLen);
-		printf("\n\tBefore byte re-ordering\n  ");
-		for ( i = 0; i < outLen; i++)
-		{
-			XGpio_DiscreteWrite(&gpio_2, 2, buf[i]);
-			printf("0x%02x, ", (unsigned char)buf[i]);
-			if( (i+1) % 8 == 0)
-				printf("\n  ");
-		}
-		char temp;
-		for(i = 0; i < outLen; i += 4)
-		{
-			// 0, 1, 2, 3
-			// 1, 0, 3, 2
-			// 3, 2, 1, 0
-			temp = buf[i + 0];
-			buf[i + 0] = buf[i + 3];
-			buf[i + 3] = temp;
+        int i = 0;
+        XGpio_DiscreteWrite(&gpio_2, 2, 0xDDDD0002);
+        XGpio_DiscreteWrite(&gpio_2, 2, outLen);
+        printf("\n\tBefore byte re-ordering\n  ");
+        for ( i = 0; i < outLen; i++)
+        {
+            XGpio_DiscreteWrite(&gpio_2, 2, buf[i]);
+            printf("0x%02x, ", (unsigned char)buf[i]);
+            if( (i+1) % 8 == 0)
+                printf("\n  ");
+        }
+        char temp;
+        for(i = 0; i < outLen; i += 4)
+        {
+            // 0, 1, 2, 3
+            // 1, 0, 3, 2
+            // 3, 2, 1, 0
+            temp = buf[i + 0];
+            buf[i + 0] = buf[i + 3];
+            buf[i + 3] = temp;
 
-			temp = buf[i + 1];
-			buf[i + 1] = buf[i + 2];
-			buf[i + 2] = temp;
-		}
+            temp = buf[i + 1];
+            buf[i + 1] = buf[i + 2];
+            buf[i + 2] = temp;
+        }
 
-		if( outLen % 4 != 0)
-		{
-			int rem = outLen % 4;
-			printf("\n\tREMAINDER of %d bytes", rem);
-		}
-		printf("\n\tAfter byte re-ordering\n");
-		for ( i = 0; i < outLen; i++)
-		{
-			XGpio_DiscreteWrite(&gpio_2, 2, buf[i]);
-			printf("0x%02x, ", (unsigned char)buf[i]);
-			if( (i+1) % 8 == 0)
-				printf("\n  ");
-		}
-		XLlFifo_Write(&fifo_1, buf, outLen);
+        if( outLen % 4 != 0)
+        {
+            int rem = outLen % 4;
+            printf("\n\tREMAINDER of %d bytes", rem);
+        }
+        printf("\n\tAfter byte re-ordering\n");
+        for ( i = 0; i < outLen; i++)
+        {
+            XGpio_DiscreteWrite(&gpio_2, 2, buf[i]);
+            printf("0x%02x, ", (unsigned char)buf[i]);
+            if( (i+1) % 8 == 0)
+                printf("\n  ");
+        }
+        XLlFifo_Write(&fifo_1, buf, outLen);
 
-		XLlFifo_iTxSetLen(&fifo_1, outLen);
-	} else {
+        XLlFifo_iTxSetLen(&fifo_1, outLen);
+        } else {
 		printf("\n\tNo transmit vacancy?\n");
 	}
 
@@ -295,90 +295,90 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 /*--------------------------------------------------------------------------*/
 int tapif_select(struct netif *netif)
 {
-	int ret = 0;
-	int i = 0;
+    int ret = 0;
+    int i = 0;
 
-	if( XLlFifo_RxOccupancy(&fifo_1) )
-	{
-		XGpio_DiscreteWrite(&gpio_1, 2, 0xAAA0);
+    if( XLlFifo_RxOccupancy(&fifo_1) )
+    {
+        XGpio_DiscreteWrite(&gpio_1, 2, 0xAAA0);
 
-		u32 recv_len_bytes;
-		static char buffer[MAX_FRAME_SIZE];
-		recv_len_bytes = (XLlFifo_iRxGetLen(&fifo_1));
+        u32 recv_len_bytes;
+        static char buffer[MAX_FRAME_SIZE];
+        recv_len_bytes = (XLlFifo_iRxGetLen(&fifo_1));
 
-		printf("\n============================================================");
-		printf("\n\ttapif_select:");
-		printf("\n\t\tNew Packet received of size: %d", (int)recv_len_bytes);
-		printf("\n------------------------------------------------------------");
+        printf("\n============================================================");
+        printf("\n\ttapif_select:");
+        printf("\n\t\tNew Packet received of size: %d", (int)recv_len_bytes);
+        printf("\n------------------------------------------------------------");
 
-		if (recv_len_bytes > 0)
-		{
-			// Receive entire buffer amount
-			XLlFifo_Read(&fifo_1, buffer, (recv_len_bytes));
+        if (recv_len_bytes > 0)
+        {
+            // Receive entire buffer amount
+            XLlFifo_Read(&fifo_1, buffer, (recv_len_bytes));
 
-			// Removing last 4 bytes, which is an indicator from the FPGA if the frame is good or bad
-			// 0x1 = Bad Frame
-			// 0x2 = Good Frame
-			recv_len_bytes -= 4;
+            // Removing last 4 bytes, which is an indicator from the FPGA if the frame is good or bad
+            // 0x1 = Bad Frame
+            // 0x2 = Good Frame
+            recv_len_bytes -= 4;
 
-			printf("\n\tBefore byte re-ordering\n   ");
-			printf("\n\trecv_len_bytes %d", (int)recv_len_bytes);
-			printf("\nbeforePacket = [\n   ");
-			for (i = 0; i < recv_len_bytes; i++)
-			{
-				XGpio_DiscreteWrite(&gpio_2, 2, buffer[i]);
-				printf("0x%02x, ", (unsigned char)buffer[i]);
-				if( (i+1) % 8 == 0)
-					printf("\n   ");
-			}
-			printf("\n ]");
+            printf("\n\tBefore byte re-ordering\n   ");
+            printf("\n\trecv_len_bytes %d", (int)recv_len_bytes);
+            printf("\nbeforePacket = [\n   ");
+            for (i = 0; i < recv_len_bytes; i++)
+            {
+                XGpio_DiscreteWrite(&gpio_2, 2, buffer[i]);
+                printf("0x%02x, ", (unsigned char)buffer[i]);
+                if( (i+1) % 8 == 0)
+                    printf("\n   ");
+            }
+            printf("\n ]");
 
-			static char temp;
-			for(i = 0; i < recv_len_bytes; i += 4)
-			{
-				temp = buffer[i + 0];
-				buffer[i + 0] = buffer[i + 3];
-				buffer[i + 3] = temp;
+            static char temp;
+            for(i = 0; i < recv_len_bytes; i += 4)
+            {
+                temp = buffer[i + 0];
+                buffer[i + 0] = buffer[i + 3];
+                buffer[i + 3] = temp;
 
-				temp = buffer[i + 1];
-				buffer[i + 1] = buffer[i + 2];
-				buffer[i + 2] = temp;
-			}
-			// todo: fix up remainder
-			if( recv_len_bytes % 4 != 0)
-			{
-				int rem = recv_len_bytes % 4;
-				printf("REMAINDER of %d bytes \n", rem);
-			}
-			printf("\n\tAfter byte re-ordering\n   ");
-			printf("\n\trecv_len_bytes %d", (int)recv_len_bytes);
-			printf("\nafterPacket = [\n   ");
-			for (i = 0; i < recv_len_bytes; i++)
-			{
-				XGpio_DiscreteWrite(&gpio_2, 2, buffer[i]);
-				printf("0x%02x, ", (unsigned char)buffer[i]);
-				if( (i+1) % 8 == 0)
-					printf("\n   ");
-			}
-			printf("\n ]");
+                temp = buffer[i + 1];
+                buffer[i + 1] = buffer[i + 2];
+                buffer[i + 2] = temp;
+            }
+            // todo: fix up remainder
+            if( recv_len_bytes % 4 != 0)
+            {
+                int rem = recv_len_bytes % 4;
+                printf("REMAINDER of %d bytes \n", rem);
+            }
+            printf("\n\tAfter byte re-ordering\n   ");
+            printf("\n\trecv_len_bytes %d", (int)recv_len_bytes);
+            printf("\nafterPacket = [\n   ");
+            for (i = 0; i < recv_len_bytes; i++)
+            {
+                XGpio_DiscreteWrite(&gpio_2, 2, buffer[i]);
+                printf("0x%02x, ", (unsigned char)buffer[i]);
+                if( (i+1) % 8 == 0)
+                    printf("\n   ");
+            }
+            printf("\n ]");
 
-			printf("\n\tAfter dump");
-			struct pbuf *p;
-			/* We allocate a pbuf chain of pbufs from the pool. */
-			p = pbuf_alloc(PBUF_RAW, recv_len_bytes, PBUF_POOL);
-			if (p != NULL) {
-				pbuf_take(p, buffer, recv_len_bytes);
-				/* acknowledge that packet has been read(); */
-			} else {
-				/* drop packet(); */
-				LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
-			}
-			printf("\n\tCalling netif->input");
-			netif->input(p, netif);
-			pbuf_free(p);
-		}
-		printf("\n============================================================\n");
-	}
+            printf("\n\tAfter dump");
+            struct pbuf *p;
+            /* We allocate a pbuf chain of pbufs from the pool. */
+            p = pbuf_alloc(PBUF_RAW, recv_len_bytes, PBUF_POOL);
+            if (p != NULL) {
+                pbuf_take(p, buffer, recv_len_bytes);
+                /* acknowledge that packet has been read(); */
+            } else {
+                /* drop packet(); */
+                LWIP_DEBUGF(NETIF_DEBUG, ("tapif_input: could not allocate pbuf\n"));
+            }
+            printf("\n\tCalling netif->input");
+            netif->input(p, netif);
+            pbuf_free(p);
+        }
+        printf("\n============================================================\n");
+    }
 
 //	static int pkt = 10;
 //	if (pkt == 0) {
@@ -516,10 +516,10 @@ err_t tapif_init(struct netif *netif)
 {
 	struct tapif *tapif = (struct tapif *) mem_malloc(sizeof(struct tapif));
 
-	print(" - tapif_init.start\n");
+	printf(" - tapif_init.start\n");
 	if (tapif == NULL)
 	{
-		print("    tapif_init: out of memory for tapif\n");
+		printf("    tapif_init: out of memory for tapif\n");
 		LWIP_DEBUGF(NETIF_DEBUG, ("tapif_init: out of memory for tapif\n"));
 		return ERR_MEM;
 	}
@@ -534,7 +534,7 @@ err_t tapif_init(struct netif *netif)
 
 	low_level_init(netif);
 
-	print(" - tapif_init.end\n");
+	printf(" - tapif_init.end\n");
 
 	return ERR_OK;
 }

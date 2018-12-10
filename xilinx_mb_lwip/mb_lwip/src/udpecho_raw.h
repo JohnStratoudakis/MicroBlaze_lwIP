@@ -37,3 +37,16 @@
 void udpecho_raw_init(void);
 
 #endif /* LWIP_UDPECHO_RAW_H */
+
+/*
+ * udpecho_raw_send
+ *      calls udp_send
+ * udpecho_raw_recv
+ *      puts data on to the FIFO for reading by the FPGA
+ * write a function that can be called from main that can send
+ *   data out the udp after being read from a FIFO
+ *   using udp_sendto
+ *
+ *
+ *
+ */

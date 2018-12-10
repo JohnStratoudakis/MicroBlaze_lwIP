@@ -58,65 +58,64 @@ static struct udp_pcb *udpecho_raw_pcb;
 
 void udpecho_raw_send(char *data, u16_t datalen)
 {
-	int i = 0;
+    int i = 0;
 
-	printf("\nudpecho_raw_send\n");
+    printf("\nudpecho_raw_send\n");
 
-	XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0001);
-	XGpio_DiscreteWrite(&gpio_2, 2, datalen);
+    XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0001);
+    XGpio_DiscreteWrite(&gpio_2, 2, datalen);
 
-	for ( i = 0; i < datalen; i++)
-	{
-		XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
-		printf("0x%02x, ", (unsigned char)data[i]);
-		if( (i+1) % 8 == 0)
-			printf("\n");
-	}
+    for ( i = 0; i < datalen; i++)
+    {
+        XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
+        printf("0x%02x, ", (unsigned char)data[i]);
+        if( (i+1) % 8 == 0)
+            printf("\n");
+    }
 
-	struct pbuf p;
-	p.len = datalen;
-	p.next = NULL;
-	p.payload = data;
-	XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0002);
-	udp_send(udpecho_raw_pcb, &p);
+    struct pbuf p;
+    p.len = datalen;
+    p.next = NULL;
+    p.payload = data;
+    XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0002);
+    udp_send(udpecho_raw_pcb, &p);
 
-	XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0003);
-	printf("\nudpecho_raw_send().end\n");
+    XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0003);
+    printf("\nudpecho_raw_send().end\n");
 }
 
-static void
-udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
-                 const ip_addr_t *addr, u16_t port)
+static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
+                             const ip_addr_t *addr, u16_t port)
 {
-	printf("udpecho_raw_recv()\n  ");
+    printf("udpecho_raw_recv()\n  ");
     LWIP_UNUSED_ARG(arg);
     if (p != NULL)
     {
-    	// Send the payload out of Fifo #1
-    	char *data;
-    	data = (char *)(p->payload);
-    	u16_t tot_len = p->tot_len;
-    	if (tot_len > 0)
-    	{
-    		if (XLlFifo_iTxVacancy(&fifo_2))
-    		{
-    			int i = 0;
-    			XGpio_DiscreteWrite(&gpio_2, 2, 0xE001);
-    			for ( i = 0; i < tot_len; i++)
-    			{
-    				XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
-    				printf("0x%02x, ", (unsigned char)data[i]);
-    				if( (i+1) % 8 == 0)
-    					printf("\n");
-    			}
+        // Send the payload out of Fifo #1
+        char *data;
+        data = (char *)(p->payload);
+        u16_t tot_len = p->tot_len;
+        if (tot_len > 0)
+        {
+            if (XLlFifo_iTxVacancy(&fifo_2))
+            {
+                int i = 0;
+                XGpio_DiscreteWrite(&gpio_2, 2, 0xE001);
+                for ( i = 0; i < tot_len; i++)
+                {
+                    XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
+                    printf("0x%02x, ", (unsigned char)data[i]);
+                    if( (i+1) % 8 == 0)
+                        printf("\n");
+                }
 
-    			XLlFifo_Write(&fifo_2, data, tot_len);
+                XLlFifo_Write(&fifo_2, data, tot_len);
 
-    			XLlFifo_iTxSetLen(&fifo_2, tot_len);
-    		}
-    	}
+                XLlFifo_iTxSetLen(&fifo_2, tot_len);
+            }
+        }
 
-    	// Send it back to the sender as quick check
+        // Send it back to the sender as quick check
         udp_sendto(upcb, p, addr, port);
 
         /* free the pbuf */
@@ -124,33 +123,34 @@ udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
     }
 }
 
-void
-udpecho_raw_init(void)
+void udpecho_raw_init(void)
 {
-	printf(" - udpecho_raw_init.start\n");
-	udpecho_raw_pcb = udp_new();
+    printf("tcpecho_raw_init: IPADDR_ANY, port 35312");
+    udpecho_raw_pcb = udp_new();
 
-	if (udpecho_raw_pcb != NULL)
-	{
-		err_t err;
+    if (udpecho_raw_pcb != NULL)
+    {
+        err_t err;
 
-		err = udp_bind(udpecho_raw_pcb, IPADDR_ANY, 35312);
-		if (err == ERR_OK)
-		{
-			udp_recv(udpecho_raw_pcb, udpecho_raw_recv, NULL);
-		}
-		else
-		{
-			/* abort? output diagnostic? */
-			printf("ERROR: udpecho_raw_init in udp_bind\n");
-		}
-	}
-	else
-	{
-		/* abort? output diagnostic? */
-		printf("ERROR: udpecho_raw_init in udp_new()\n");
-	}
-	printf(" - udpecho_raw_init.end\n");
+        err = udp_bind(udpecho_raw_pcb, IPADDR_ANY, 35312);
+        if (err == ERR_OK)
+        {
+            printf("WHY is it calling udp_recv here??");
+            udp_recv(udpecho_raw_pcb, udpecho_raw_recv, NULL);
+            printf("Does reaching this line require UDP data to have been received?");
+        }
+        else
+        {
+            /* abort? output diagnostic? */
+            printf("ERROR: udpecho_raw_init in udp_bind\n");
+        }
+    }
+    else
+    {
+        /* abort? output diagnostic? */
+        printf("ERROR: udpecho_raw_init in udp_new()\n");
+    }
+    printf(" - udpecho_raw_init.end\n");
 }
 
 #endif /* LWIP_UDP */

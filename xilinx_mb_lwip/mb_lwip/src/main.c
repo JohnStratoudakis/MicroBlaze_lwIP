@@ -36,12 +36,10 @@
 #include "netif/etharp.h"
 
 #include "udpecho_raw.h"
-// One cannot fly into flying." That's not mine, that's Nietzsche's.
-// First do UDP, then TCP
-//#include "tcpecho_raw.h"
+#include "tcpecho_raw.h"
 
 static ip_addr_t ipaddr, netmask, gw;
-// RIGHT BEFORE EASTER
+
 int main()
 {
     struct netif netif;
@@ -52,8 +50,8 @@ int main()
 
     u32 ret = init_all();
 
-    print("Good evening from mb_lwip, today is Tuesday, June 5th, 2018\n");
-    print("The time is now 6:52 PM \n");
+    printf("Good evening from mb_lwip, today is Sunday, December 9th, 2018\n");
+    printf("The time is now 10:28 PM \n");
 #ifdef PROCESSOR_LITTLE_ENDIAN
     printf("PROCESSOR_LITTLE_ENDIAN = 1\n");
 #else
@@ -62,19 +60,23 @@ int main()
 
     printf("BYTE_ORDER = %d\n", BYTE_ORDER);
 
-
     lwip_init();
 
     netif_add(&netif, &ipaddr, &netmask, &gw, NULL, tapif_init, ethernet_input);
 
     netif_set_default(&netif);
     netif_set_up(&netif);
+
+    printf("CHECKPOINT-1: Calling udpecho_raw_init()");
     udpecho_raw_init();
-//    tcpecho_raw_init();
+    printf("CHECKPOINT-2: Calling tcpecho_raw_init()");
+    tcpecho_raw_init();
+
+    printf("CHECKPOINT-3");
 
 	XGpio_DiscreteWrite(&gpio_2, 2, ret);
 
-	XGpio_DiscreteWrite(&gpio_2, 2, 0xAF); // "Build" number, increment each time
+	XGpio_DiscreteWrite(&gpio_2, 2, 0xB0); // "Build" number, increment each time
 
 	u32 last_0 = 0;
 	u32 last_1 = 0;
