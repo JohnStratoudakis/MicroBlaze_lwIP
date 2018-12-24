@@ -50,15 +50,8 @@ int main()
 
     u32 ret = init_all();
 
-    printf("Good evening from mb_lwip, today is Sunday, December 9th, 2018\n");
-    printf("The time is now 10:28 PM \n");
-#ifdef PROCESSOR_LITTLE_ENDIAN
-    printf("PROCESSOR_LITTLE_ENDIAN = 1\n");
-#else
-    printf("PROCESSOR_LITTLE_ENDIAN = 0\n");
-#endif
-
-    printf("BYTE_ORDER = %d\n", BYTE_ORDER);
+    printf("Good evening from mb_lwip, today is Friday, December 21st, 2018\n");
+    printf("The time is now 5:45 PM \n");
 
     lwip_init();
 
@@ -67,15 +60,10 @@ int main()
     netif_set_default(&netif);
     netif_set_up(&netif);
 
-    printf("CHECKPOINT-1: Calling udpecho_raw_init()");
     udpecho_raw_init();
-    printf("CHECKPOINT-2: Calling tcpecho_raw_init()");
     tcpecho_raw_init();
 
-    printf("CHECKPOINT-3");
-
 	XGpio_DiscreteWrite(&gpio_2, 2, ret);
-
 	XGpio_DiscreteWrite(&gpio_2, 2, 0xB0); // "Build" number, increment each time
 
 	u32 last_0 = 0;

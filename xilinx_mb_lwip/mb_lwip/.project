@@ -3,7 +3,7 @@
 	<name>mb_lwip</name>
 	<comment></comment>
 	<projects>
-		<project>mb_lwip_bsp</project>
+		<project>standalone_bsp_0</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -27,7 +27,7 @@
 		<link>
 			<name>src/lwip</name>
 			<type>2</type>
-			<location>C:/work/git/FPGANow/MicroBlaze_lwIP/xilinx_mb_lwip/lwip/lwip</location>
+			<location>Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/lwip/lwip</location>
 		</link>
 	</linkedResources>
 </projectDescription>

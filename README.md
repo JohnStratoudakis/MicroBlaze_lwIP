@@ -7,7 +7,34 @@ git clone --recurse-submodules git@github.com:JohnStratoudakis/MicroBlaze_lwIP.g
 git submodule init
 git submodule update
 
-== After project export
+== Open the project using LabVIEW 2018 32-bit
+ - labview_fpga_nic\labview_fpga_nic.lvproj
+== Right-click the build specification and select "Build"
+ - FPGA\Build Specifications\fpga_nic
+== After project export completes, it will give you the option to "Launch Vivado"
+== Open the TCL Console Window
+== Change directory to the xilinx_mb_lwip directory
+ - Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip
+== Source the microblaze design tcl script
+ - source d_microblaze.tcl
+== Uncomment everything in the UserRTL_d_microblaze_wrapper.vhd file:
+ - Design sources
+  - PXIe6592R_Top_Gen2x8
+   - PXIe6592RWindow
+    - theCLIPS
+     - UserRTL_microblaze_CLIP1
+== Open the design by double-clicking on the child node named "d_microblaze_i"
+== Click on the Address Editor Window, increase memory to 1MB for:
+  * microblaze_0_local_memory/dlmb_bram_if_cntlr
+  * microblaze_0_local_memory/ilmb_bram_if_cntlr
+== click the save icon
+== Click "Run Synthesis"
+== file export hardware
+== start xilinx sdk
+Z:\work\git\fpganow\MicroBlaze_lwIP\xilinx_mb_lwip\workspace
+
+Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip
+
  - Create Block Design "d_microblaze"
  - Run Block Automation
   - Local Memory: 128 KB
@@ -22,11 +49,9 @@ git submodule update
   - right-click on ext_reset_in and 'make external'
    - name this port reset_rtl
    - make sure it is active low (from properties)
- * 
+ 
 
- - From Address Editor, increase memory to 1MB for:
-  * microblaze_0_local_memory/dlmb_bram_if_cntlr
-  * microblaze_0_local_memory/ilmb_bram_if_cntlr
+
  - Run Validate Design
  - Run Generate Output Products
  - In file d_microblaze_wrapper.vhd, uncomment to bring usage of d_microblaze component
@@ -41,5 +66,6 @@ git submodule update
  - Create Board Support Package
  - Import "Existing Project" C:\work\git\FPGANow\MicroBlaze_lwIP\xilinx_mb_lwip\mb_lwip
   - Do not need to copy sources in.
+ - Increase heap and stack space to 8kb.
  
- 
+ Z:\work\git\fpganow\MicroBlaze_lwIP\labview_fpga_nic\ProjectExportForVivado\fpga_nic\VivadoProject\fpga_nic.sdk\PXIe6592R_Top_Gen2x8.hdf
