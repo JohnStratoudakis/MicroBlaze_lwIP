@@ -27,7 +27,7 @@
 		<link>
 			<name>src/lwip</name>
 			<type>2</type>
-			<location>Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/lwip/lwip</location>
+			<locationURI>PARENT-1-PROJECT_LOC/lwip/lwip</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
