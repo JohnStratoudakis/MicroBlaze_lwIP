@@ -50,8 +50,9 @@ int main()
 
     u32 ret = init_all();
 
-    printf("Good evening from mb_lwip, today is Friday, December 21st, 2018\n");
-    printf("The time is now 5:45 PM \n");
+    printf("Good evening from mb_lwip, today is Saturday, December 29th, 2018\n");
+    printf("The time is now 3:57 PM \n");
+    printf("BITSTREAM # 5,555,555");
 
     lwip_init();
 
