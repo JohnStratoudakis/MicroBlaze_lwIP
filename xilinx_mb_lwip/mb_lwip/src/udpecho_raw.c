@@ -85,38 +85,41 @@ void udpecho_raw_send(char *data, u16_t datalen)
 }
 
 static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
-                             const ip_addr_t *addr, u16_t port)
+                             ip_addr_t *addr, u16_t port)
 {
-    printf("udpecho_raw_recv()\n  ");
-    LWIP_UNUSED_ARG(arg);
+    printf("udpecho_raw_recv()\n");
+//    LWIP_UNUSED_ARG(arg);
     if (p != NULL)
     {
         // Send the payload out of Fifo #1
         char *data;
         data = (char *)(p->payload);
         u16_t tot_len = p->tot_len;
+        printf("udpecho_raw_recv - p->tot_len = %d\n", tot_len);
         if (tot_len > 0)
         {
             if (XLlFifo_iTxVacancy(&fifo_2))
             {
                 int i = 0;
-                XGpio_DiscreteWrite(&gpio_2, 2, 0xE001);
+//                XGpio_DiscreteWrite(&gpio_2, 2, 0xE001);
                 for ( i = 0; i < tot_len; i++)
                 {
-                    XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
+//                    XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
                     printf("0x%02x, ", (unsigned char)data[i]);
                     if( (i+1) % 8 == 0)
                         printf("\n");
                 }
 
-                XLlFifo_Write(&fifo_2, data, tot_len);
-
-                XLlFifo_iTxSetLen(&fifo_2, tot_len);
+                // Send up to labview host
+//                XLlFifo_Write(&fifo_2, data, tot_len);
+//                XLlFifo_iTxSetLen(&fifo_2, tot_len);
+                // Send it back to the sender as quick check
+                printf("udp_sendto() addr 0x%x\n", addr->addr);
+                udp_sendto(upcb, p, addr, port);
             }
+        } else {
+        	printf("tot_len == 0\n");
         }
-
-        // Send it back to the sender as quick check
-        udp_sendto(upcb, p, addr, port);
 
         /* free the pbuf */
         pbuf_free(p);
@@ -125,7 +128,7 @@ static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
 
 void udpecho_raw_init(void)
 {
-    printf("tcpecho_raw_init: IPADDR_ANY, port 35312");
+    printf("udpecho_raw_init: IPADDR_ANY, port 35312\n");
     udpecho_raw_pcb = udp_new();
 
     if (udpecho_raw_pcb != NULL)
@@ -135,9 +138,8 @@ void udpecho_raw_init(void)
         err = udp_bind(udpecho_raw_pcb, IPADDR_ANY, 35312);
         if (err == ERR_OK)
         {
-            printf("WHY is it calling udp_recv here??");
+        	printf("Calling udp_recv to set up callback function\n");
             udp_recv(udpecho_raw_pcb, udpecho_raw_recv, NULL);
-            printf("Does reaching this line require UDP data to have been received?");
         }
         else
         {

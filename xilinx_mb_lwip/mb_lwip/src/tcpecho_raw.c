@@ -85,6 +85,8 @@ static void tcpecho_raw_free(struct tcpecho_raw_state *es)
 
 static void tcpecho_raw_close(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 {
+    printf("tcpecho_raw_close()\n");
+
     tcp_arg(tpcb, NULL);
     tcp_sent(tpcb, NULL);
     tcp_recv(tpcb, NULL);
@@ -212,7 +214,8 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     struct tcpecho_raw_state *es;
     err_t ret_err;
 
-    LWIP_ASSERT("arg != NULL",arg != NULL);
+    printf("tcpecho_raw_recv()\n");
+//    LWIP_ASSERT("arg != NULL",arg != NULL);
     es = (struct tcpecho_raw_state *)arg;
     if (p == NULL)
     {
@@ -284,6 +287,8 @@ static err_t tcpecho_raw_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
     err_t ret_err;
     struct tcpecho_raw_state *es;
 
+    printf("tcpecho_raw_accept()\n");
+
     LWIP_UNUSED_ARG(arg);
     if ((err != ERR_OK) || (newpcb == NULL))
     {
@@ -319,7 +324,8 @@ static err_t tcpecho_raw_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
 
 void tcpecho_raw_init(void)
 {
-    printf("tcpecho_raw_init: IPADDR_ANY, port 33514");
+    printf("tcpecho_raw_init: IPADDR_ANY, port 33514\n");
+
     //  tcpecho_raw_pcb = tcp_new_ip_type(IPADDR_ANY);
     tcpecho_raw_pcb = tcp_new();
     if (tcpecho_raw_pcb != NULL)
@@ -329,6 +335,7 @@ void tcpecho_raw_init(void)
         err = tcp_bind(tcpecho_raw_pcb, IPADDR_ANY, 33514);
         if (err == ERR_OK)
         {
+        	printf("Calling tcp_listen and tcp_accept to set up callback function\n");
             tcpecho_raw_pcb = tcp_listen(tcpecho_raw_pcb);
             tcp_accept(tcpecho_raw_pcb, tcpecho_raw_accept);
         }

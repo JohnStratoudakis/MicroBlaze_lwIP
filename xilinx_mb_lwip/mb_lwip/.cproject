@@ -29,7 +29,7 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.mbversion.1927548909" name="MicroBlaze Version" superClass="xilinx.gnu.mb.compiler.inferred.mbversion" value="10.0" valueType="string"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.norelax.1841147015" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.compiler.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.843061596" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.456056850" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes"/>
+								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.456056850" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath"/>
 								<option id="xilinx.gnu.compiler.dircategory.includes.50009150" name="Include Paths" superClass="xilinx.gnu.compiler.dircategory.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mb_lwip/src/lwip/include/netif}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mb_lwip/src/lwip/include/ipv4}&quot;"/>
@@ -47,7 +47,7 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.norelax.1572723549" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.compiler.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.945179388" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.884145094" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="C:/work/git/FPGANow/MicroBlaze_lwIP/workspace/mb_lwip_bsp/microblaze_0/include"/>
+									<listOptionValue builtIn="false" value="Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/workspace/mb_lwip_bsp/microblaze_0/include"/>
 								</option>
 								<option id="xilinx.gnu.mb.compiler.inferred.garbage.1170659562" name="Enable garbage collector (-ffunction-sections -fdata-sections)" superClass="xilinx.gnu.mb.compiler.inferred.garbage" value="true" valueType="boolean"/>
 							</tool>
@@ -56,7 +56,7 @@
 								<option id="xilinx.gnu.mb.linker.inferred.mbversion.1638548739" name="MicroBlaze Version" superClass="xilinx.gnu.mb.linker.inferred.mbversion" value="10.0" valueType="string"/>
 								<option id="xilinx.gnu.mb.linker.inferred.norelax.1708251004" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.linker.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.2021942642" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.1414951279" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath"/>
+								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.1414951279" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.685710096" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
 								</option>
@@ -76,7 +76,7 @@
 								<option id="xilinx.gnu.mb.linker.inferred.norelax.562178814" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.linker.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.2016403215" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.334105698" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths">
-									<listOptionValue builtIn="false" value="C:/work/git/FPGANow/MicroBlaze_lwIP/workspace/mb_lwip_bsp/microblaze_0/lib"/>
+									<listOptionValue builtIn="false" value="Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/workspace/mb_lwip_bsp/microblaze_0/lib"/>
 								</option>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.1059484962" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
@@ -89,7 +89,9 @@
 					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="mb_lwip_bsp;org.eclipse.cdt.core.default.config.561405589" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
+			</storageModule>
 		</cconfiguration>
 		<cconfiguration id="xilinx.gnu.mb.exe.release.676691470">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="xilinx.gnu.mb.exe.release.676691470" moduleId="org.eclipse.cdt.core.settings" name="Release">
@@ -119,7 +121,7 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.mbversion.1954749338" name="MicroBlaze Version" superClass="xilinx.gnu.mb.compiler.inferred.mbversion" value="10.0" valueType="string"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.norelax.1423235005" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.compiler.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.438159740" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.2041267242" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes"/>
+								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.2041267242" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath"/>
 								<option id="xilinx.gnu.compiler.dircategory.includes.669286715" name="Include Paths" superClass="xilinx.gnu.compiler.dircategory.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mb_lwip/src/lwip/include/netif}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mb_lwip/src/lwip/include/ipv4}&quot;"/>
@@ -137,7 +139,7 @@
 								<option id="xilinx.gnu.mb.compiler.inferred.norelax.964666082" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.compiler.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.compiler.inferred.usele.1117256858" name="Produce little endian code (-mlittle-endian)" superClass="xilinx.gnu.mb.compiler.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.1621023480" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="C:/work/git/FPGANow/MicroBlaze_lwIP/workspace/mb_lwip_bsp/microblaze_0/include"/>
+									<listOptionValue builtIn="false" value="Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/workspace/mb_lwip_bsp/microblaze_0/include"/>
 								</option>
 								<option id="xilinx.gnu.mb.compiler.inferred.garbage.790010135" name="Enable garbage collector (-ffunction-sections -fdata-sections)" superClass="xilinx.gnu.mb.compiler.inferred.garbage" value="true" valueType="boolean"/>
 							</tool>
@@ -146,7 +148,7 @@
 								<option id="xilinx.gnu.mb.linker.inferred.mbversion.1271019337" name="MicroBlaze Version" superClass="xilinx.gnu.mb.linker.inferred.mbversion" value="10.0" valueType="string"/>
 								<option id="xilinx.gnu.mb.linker.inferred.norelax.1404123057" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.linker.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.363941658" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
-								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.583109954" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath"/>
+								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.583109954" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.2103571519" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
 								</option>
@@ -166,7 +168,7 @@
 								<option id="xilinx.gnu.mb.linker.inferred.norelax.839577394" name="No relaxation (-Wl,--no-relax)" superClass="xilinx.gnu.mb.linker.inferred.norelax" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.mb.linker.inferred.usele.291786450" name="Produce little endian artifacts (-mlittle-endian)" superClass="xilinx.gnu.mb.linker.inferred.usele" value="true" valueType="boolean"/>
 								<option id="xilinx.gnu.linker.inferred.swplatform.lpath.1582627028" name="Software Platform Library Path" superClass="xilinx.gnu.linker.inferred.swplatform.lpath" valueType="libPaths">
-									<listOptionValue builtIn="false" value="C:/work/git/FPGANow/MicroBlaze_lwIP/workspace/mb_lwip_bsp/microblaze_0/lib"/>
+									<listOptionValue builtIn="false" value="Z:/work/git/fpganow/MicroBlaze_lwIP/xilinx_mb_lwip/workspace/mb_lwip_bsp/microblaze_0/lib"/>
 								</option>
 								<option id="xilinx.gnu.linker.inferred.swplatform.flags.1258083009" name="Software Platform Inferred Flags" superClass="xilinx.gnu.linker.inferred.swplatform.flags" valueType="libs">
 									<listOptionValue builtIn="false" value="-Wl,--start-group,-lxil,-lgcc,-lc,--end-group"/>
@@ -177,24 +179,11 @@
 							<tool id="xilinx.gnu.mb.size.release.877007314" name="MicroBlaze Print Size" superClass="xilinx.gnu.mb.size.release"/>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="xilinx.gnu.mb.exe.release.676691470.1845304104" name="/" resourcePath="src/lwip">
-						<toolChain id="xilinx.gnu.mb.exe.release.toolchain.1444177550" name="Xilinx MicroBlaze GNU Toolchain" superClass="xilinx.gnu.mb.exe.release.toolchain" unusedChildren="">
-							<tool id="xilinx.gnu.mb.c.toolchain.assembler.release.1752021726" name="MicroBlaze gcc assembler" superClass="xilinx.gnu.mb.c.toolchain.assembler.release.345860636">
-								<inputType id="xilinx.gnu.assembler.input.766000950" superClass="xilinx.gnu.assembler.input"/>
-							</tool>
-							<tool id="xilinx.gnu.mb.c.toolchain.compiler.release.417658687" name="MicroBlaze gcc compiler" superClass="xilinx.gnu.mb.c.toolchain.compiler.release.232688273">
-								<inputType id="xilinx.gnu.compiler.input.668974958" name="C source files" superClass="xilinx.gnu.compiler.input"/>
-							</tool>
-							<tool id="xilinx.gnu.mb.cxx.toolchain.compiler.release.1855602457" name="MicroBlaze g++ compiler" superClass="xilinx.gnu.mb.cxx.toolchain.compiler.release.1180171717"/>
-							<tool id="xilinx.gnu.mb.toolchain.archiver.291473635" name="MicroBlaze archiver" superClass="xilinx.gnu.mb.toolchain.archiver.988449458"/>
-							<tool id="xilinx.gnu.mb.c.toolchain.linker.release.1480219898" name="MicroBlaze gcc linker" superClass="xilinx.gnu.mb.c.toolchain.linker.release.1694483775"/>
-							<tool id="xilinx.gnu.mb.cxx.toolchain.linker.release.1363171944" name="MicroBlaze g++ linker" superClass="xilinx.gnu.mb.cxx.toolchain.linker.release.1775066219"/>
-							<tool id="xilinx.gnu.mb.size.release.1502526669" name="MicroBlaze Print Size" superClass="xilinx.gnu.mb.size.release.877007314"/>
-						</toolChain>
-					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="mb_lwip_bsp;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
+			</storageModule>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>

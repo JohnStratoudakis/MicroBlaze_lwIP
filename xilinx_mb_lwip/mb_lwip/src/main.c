@@ -50,25 +50,28 @@ int main()
 
     u32 ret = init_all();
 
-    printf("Good evening from mb_lwip, today is Saturday, December 29th, 2018\n");
-    printf("The time is now 3:57 PM \n");
-    printf("BITSTREAM # 5,555,555");
+    printf("Good evening from mb_lwip, today is Tuesday, January 1st, 2019\n");
+    printf("The time is now 7:41 PM \n");
+    printf("init_all() == %d\n", (int)ret);
 
     lwip_init();
 
     netif_add(&netif, &ipaddr, &netmask, &gw, NULL, tapif_init, ethernet_input);
 
+    printf("CHECKPOINT-1\n");
     netif_set_default(&netif);
+
+//    udpecho_raw_init();
+//    tcpecho_raw_init();
+
     netif_set_up(&netif);
+    printf("CHECKPOINT-2\n");
 
-    udpecho_raw_init();
-    tcpecho_raw_init();
+//	XGpio_DiscreteWrite(&gpio_2, 2, ret);
+//	XGpio_DiscreteWrite(&gpio_2, 2, 0xB0); // "Build" number, increment each time
 
-	XGpio_DiscreteWrite(&gpio_2, 2, ret);
-	XGpio_DiscreteWrite(&gpio_2, 2, 0xB0); // "Build" number, increment each time
-
-	u32 last_0 = 0;
-	u32 last_1 = 0;
+//	u32 last_0 = 0;
+//	u32 last_1 = 0;
 
     while(1)
     {
@@ -93,20 +96,20 @@ int main()
 //        	}
 //    	}
 
-    	// Leaving this here as a "heartbeat"
-    	// Check GPIO #1
-		u32 gpi_val_0 = XGpio_DiscreteRead(&gpio_1, 1);
-		if(gpi_val_0 != last_0) {
-			last_0 = gpi_val_0;
-			XGpio_DiscreteWrite(&gpio_1, 2, (last_0 + last_0));
-		}
-
-		// Check GPIO #2
-		u32 gpi_val_1 = XGpio_DiscreteRead(&gpio_2, 1);
-		if(gpi_val_1 != last_1) {
-			last_1 = gpi_val_1;
-			XGpio_DiscreteWrite(&gpio_2, 2, (last_1 + last_1));
-		}
+//    	// Leaving this here as a "heartbeat"
+//    	// Check GPIO #1
+//		u32 gpi_val_0 = XGpio_DiscreteRead(&gpio_1, 1);
+//		if(gpi_val_0 != last_0) {
+//			last_0 = gpi_val_0;
+//			XGpio_DiscreteWrite(&gpio_1, 2, (last_0 + last_0));
+//		}
+//
+//		// Check GPIO #2
+//		u32 gpi_val_1 = XGpio_DiscreteRead(&gpio_2, 1);
+//		if(gpi_val_1 != last_1) {
+//			last_1 = gpi_val_1;
+//			XGpio_DiscreteWrite(&gpio_2, 2, (last_1 + last_1));
+//		}
     }
 
 	return 0;

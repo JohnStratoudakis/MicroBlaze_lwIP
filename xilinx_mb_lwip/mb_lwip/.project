@@ -3,7 +3,7 @@
 	<name>mb_lwip</name>
 	<comment></comment>
 	<projects>
-		<project>standalone_bsp_0</project>
+		<project>mb_lwip_bsp</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
