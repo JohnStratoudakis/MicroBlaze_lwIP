@@ -19,7 +19,6 @@
 		</Item>
 		<Item Name="Actions" Type="Folder">
 			<Item Name="PostBuild.vi" Type="VI" URL="../Actions/PostBuild.vi"/>
-			<Item Name="IsAtApartment.vi" Type="VI" URL="../Actions/IsAtApartment.vi"/>
 		</Item>
 		<Item Name="Exports" Type="Folder">
 			<Property Name="NI.SortType" Type="Int">3</Property>
@@ -19594,7 +19593,7 @@ gpio_rtl_0_tri_oNumberOfSyncRegistersForReadInProject=Auto;resource=/UserRTL_mic
 				<Property Name="Bld_previewCacheID" Type="Str">{365F24AB-F67F-49BD-96F6-BEC97136D379}</Property>
 				<Property Name="Bld_userLogFile" Type="Path">../builds/labview_fpga_nic/FPGATester/labview_fpga_nic_FPGATester_log.txt</Property>
 				<Property Name="Bld_userLogFile.pathType" Type="Str">relativeToCommon</Property>
-				<Property Name="Bld_version.build" Type="Int">119</Property>
+				<Property Name="Bld_version.build" Type="Int">121</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">FPGATester.exe</Property>
 				<Property Name="Destination[0].path" Type="Path">../builds/NI_AB_PROJECTNAME/FPGATester/FPGATester.exe</Property>
