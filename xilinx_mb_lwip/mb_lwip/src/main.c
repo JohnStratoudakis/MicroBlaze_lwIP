@@ -50,8 +50,8 @@ int main()
 
     u32 ret = init_all();
 
-    printf("Good evening from mb_lwip, today is Tuesday, January 1st, 2019\n");
-    printf("The time is now 7:41 PM \n");
+    printf("Good afternoon from mb_lwip, today is Thursday, January 10th, 2019\n");
+    printf("The time is now 6:04 AM \n");
     printf("init_all() == %d\n", (int)ret);
 
     lwip_init();
@@ -61,17 +61,11 @@ int main()
     printf("CHECKPOINT-1\n");
     netif_set_default(&netif);
 
-//    udpecho_raw_init();
+    udpecho_raw_init();
 //    tcpecho_raw_init();
 
     netif_set_up(&netif);
     printf("CHECKPOINT-2\n");
-
-//	XGpio_DiscreteWrite(&gpio_2, 2, ret);
-//	XGpio_DiscreteWrite(&gpio_2, 2, 0xB0); // "Build" number, increment each time
-
-//	u32 last_0 = 0;
-//	u32 last_1 = 0;
 
     while(1)
     {

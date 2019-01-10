@@ -101,21 +101,20 @@ static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
             if (XLlFifo_iTxVacancy(&fifo_2))
             {
                 int i = 0;
-//                XGpio_DiscreteWrite(&gpio_2, 2, 0xE001);
                 for ( i = 0; i < tot_len; i++)
                 {
-//                    XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
                     printf("0x%02x, ", (unsigned char)data[i]);
                     if( (i+1) % 8 == 0)
                         printf("\n");
                 }
 
                 // Send up to labview host
+//                printf("\nSending to host %d bytes\n", tot_len);
 //                XLlFifo_Write(&fifo_2, data, tot_len);
 //                XLlFifo_iTxSetLen(&fifo_2, tot_len);
                 // Send it back to the sender as quick check
-                printf("udp_sendto() addr 0x%x\n", addr->addr);
-                udp_sendto(upcb, p, addr, port);
+//                printf("udp_sendto() addr 0x%x\n", addr->addr);
+//                udp_sendto(upcb, p, addr, port);
             }
         } else {
         	printf("tot_len == 0\n");
