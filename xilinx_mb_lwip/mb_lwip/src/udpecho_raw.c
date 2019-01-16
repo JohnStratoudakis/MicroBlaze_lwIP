@@ -113,8 +113,8 @@ static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
 //                XLlFifo_Write(&fifo_2, data, tot_len);
 //                XLlFifo_iTxSetLen(&fifo_2, tot_len);
                 // Send it back to the sender as quick check
-//                printf("udp_sendto() addr 0x%x\n", addr->addr);
-//                udp_sendto(upcb, p, addr, port);
+                printf("udp_sendto() addr 0x%x\n", addr->addr);
+                udp_sendto(upcb, p, addr, port);
             }
         } else {
         	printf("tot_len == 0\n");

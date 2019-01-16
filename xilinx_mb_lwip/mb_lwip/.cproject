@@ -106,7 +106,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" id="xilinx.gnu.mb.exe.release.676691470" name="Release" parent="xilinx.gnu.mb.exe.release" postannouncebuildStep="Update mb_lwip.elf to server" postbuildStep="..\postBuild.py" preannouncebuildStep="PRE BUILD STEP" prebuildStep="dir">
+				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" id="xilinx.gnu.mb.exe.release.676691470" name="Release" parent="xilinx.gnu.mb.exe.release" postannouncebuildStep="Update mb_lwip.elf to server" postbuildStep="..\postBuild.py" preannouncebuildStep="" prebuildStep="">
 					<folderInfo id="xilinx.gnu.mb.exe.release.676691470." name="/" resourcePath="">
 						<toolChain id="xilinx.gnu.mb.exe.release.toolchain.1901770139" name="Xilinx MicroBlaze GNU Toolchain" superClass="xilinx.gnu.mb.exe.release.toolchain">
 							<targetPlatform binaryParser="com.xilinx.sdk.managedbuilder.XELF.mb" id="xilinx.mb.target.gnu.base.release.1267284349" isAbstract="false" name="Debug Platform" superClass="xilinx.mb.target.gnu.base.release"/>

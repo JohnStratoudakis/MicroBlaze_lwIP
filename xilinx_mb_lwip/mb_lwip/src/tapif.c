@@ -286,12 +286,12 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 	return ERR_OK;
 }
 
-#define DUMP 1
 /*--------------------------------------------------------------------------*/
 int tapif_select(struct netif *netif)
 {
     int ret = 0;
     int i = 0;
+    int dump = 0;
 
     if( XLlFifo_RxOccupancy(&fifo_1) )
     {
@@ -309,6 +309,10 @@ int tapif_select(struct netif *netif)
             // Receive entire buffer amount
             XLlFifo_Read(&fifo_1, buffer, (recv_len_bytes));
 
+            if(buffer[15] == 0x80 && buffer[14] == 0x0) {
+            	printf("Dumping frame because EtherType is IPv4\n");
+            	dump = 1;
+            }
             // Removing last 4 bytes, which is an indicator from the FPGA if the frame is good or bad
             // 0x1 = Bad Frame
             // 0x2 = Good Frame
@@ -316,7 +320,7 @@ int tapif_select(struct netif *netif)
 
             printf(" [BEFORE] recv_len_bytes %d\n", (int)recv_len_bytes);
 
-            if(DUMP) {
+            if(dump) {
             	printf("   beforePacket = [\n      ");
             	for (i = 0; i < recv_len_bytes; i++)
             	{
@@ -351,7 +355,7 @@ int tapif_select(struct netif *netif)
             	printf(" [INFO] Protocol: 0x%x\n", (unsigned char)buffer[23]);
             }
 
-            if(DUMP) {
+            if(dump) {
             	printf("   afterPacket = [\n      ");
             	for (i = 0; i < recv_len_bytes; i++)
             	{
@@ -369,10 +373,10 @@ int tapif_select(struct netif *netif)
                 pbuf_take(p, buffer, recv_len_bytes);
                 /* acknowledge that packet has been read(); */
                 printf("pbuf_take()\n");
-                //printf(" Calling netif->input\n");
-                //netif->input(p, netif);
-                //pbuf_free(p);
-                //printf("After pbuf_free()\n");
+                printf(" Calling netif->input\n");
+                netif->input(p, netif);
+                pbuf_free(p);
+                printf("After pbuf_free()\n");
             } else {
                 /* drop packet(); */
             	printf("drop_packet()\n");
