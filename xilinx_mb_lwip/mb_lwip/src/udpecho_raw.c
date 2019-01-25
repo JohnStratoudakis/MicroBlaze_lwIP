@@ -107,14 +107,34 @@ static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
                     if( (i+1) % 8 == 0)
                         printf("\n");
                 }
+                printf("\n");
 
                 // Send up to labview host
 //                printf("\nSending to host %d bytes\n", tot_len);
 //                XLlFifo_Write(&fifo_2, data, tot_len);
 //                XLlFifo_iTxSetLen(&fifo_2, tot_len);
+
                 // Send it back to the sender as quick check
-                printf("udp_sendto() addr 0x%x\n", addr->addr);
-                udp_sendto(upcb, p, addr, port);
+                //printf("\nudp_sendto() port 0x%x\n", port);
+                //printf("\tport %d\n", port);
+                //u16_t revPort = ((port & 0xFF00) >> 8) || ((port & 0xFF) << 8);
+                //printf("\tport (Byte-Order Reversed) %u\n", revPort);
+                u16_t revPort = 0x89F0;
+                printf("udp_sendto()\n");
+                printf("revPort (Byte-Order Reversed) %u\n", revPort);
+                printf("addr: 0x%x\n", addr->addr);
+                printf("addr: %d.%d.%d.%d\n",
+                		(addr->addr >>  0) & 0xFF, (addr->addr >>  8) & 0xFF,
+						(addr->addr >> 16) & 0xFF, (addr->addr >> 24) & 0xFF);
+                printf("upcb->local_ip.addr: %d.%d.%d.%d\n",
+                        (upcb->local_ip.addr >>  0) & 0xFF, (upcb->local_ip.addr >>  8) & 0xFF,
+                		(upcb->local_ip.addr >> 16) & 0xFF, (upcb->local_ip.addr >> 24) & 0xFF);
+                printf("upcb->remote_ip.addr: %d.%d.%d.%d\n",
+                        (upcb->remote_ip.addr >>  0) & 0xFF, (upcb->remote_ip.addr >>  8) & 0xFF,
+                        (upcb->remote_ip.addr >> 16) & 0xFF, (upcb->remote_ip.addr >> 24) & 0xFF);
+
+				//IPADDR2_COPY(&hdr->dipaddr, &hdr->sipaddr);
+                udp_sendto(upcb, p, addr, revPort);
             }
         } else {
         	printf("tot_len == 0\n");

@@ -50,8 +50,8 @@ int main()
 
     u32 ret = init_all();
 
-    printf("Good afternoon from mb_lwip, today is Thursday, January 10th, 2019\n");
-    printf("The time is now 6:04 AM \n");
+    printf("Good afternoon from mb_lwip, today is Friday, January 25th, 2019\n");
+    printf("The time is now 2:49 PM \n");
     printf("init_all() == %d\n", (int)ret);
 
     lwip_init();

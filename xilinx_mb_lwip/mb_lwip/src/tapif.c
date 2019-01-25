@@ -200,6 +200,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
     static char buf[1514];
     static int outLen = 0;
+    int i;
+    const int frame_alignment = 64;
 
     printf("============================================================\n");
     printf(" low_level_output:\n");
@@ -213,17 +215,21 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 
     outLen = p->tot_len;
     printf(" Sending out a packet of length: %d\n", outLen);
-    if( outLen % 4 != 0)
+    if( outLen % frame_alignment != 0)
     {
-        int rem = outLen % 4;
+        int rem = outLen % frame_alignment;
         printf("  -- remainder of %d bytes --\n", rem);
-        outLen += rem;
 
-        // Make the last 4 bytes 0
-        buf[outLen - 1] = 0;
-        buf[outLen - 2] = 0;
-        buf[outLen - 3] = 0;
-        buf[outLen - 4] = 0;
+        outLen += (frame_alignment - rem);
+        printf("  -- new length %d bytes --\n", outLen);
+    }
+
+    // Add 40 bytes of padding as a test
+//    outLen += 40;
+//    printf("  -- with padding %d bytes --\n", outLen);
+
+    for(i=0; i<outLen; i++) {
+    	buf[i] = 0;
     }
 
     /* initiate transfer(); */
@@ -232,6 +238,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 
     // TOOD: Make sure output is rounded up to the nearest 32-bit word
     // ADD zeros
+    // TODO: Try with 8 byte alignment, the ideal
     // transfer p->tot_len from buf to FPGA
     if (XLlFifo_iTxVacancy(&fifo_1))
     {
@@ -258,12 +265,6 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
                 temp = buf[i + 1];
                 buf[i + 1] = buf[i + 2];
                 buf[i + 2] = temp;
-            }
-
-            if( outLen % 4 != 0)
-            {
-                int rem = outLen % 4;
-                printf(" REMAINDER of %d bytes\n", rem);
             }
 
             printf("\n\n");
