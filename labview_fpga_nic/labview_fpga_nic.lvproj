@@ -19,6 +19,7 @@
 		</Item>
 		<Item Name="Actions" Type="Folder">
 			<Item Name="PostBuild.vi" Type="VI" URL="../Actions/PostBuild.vi"/>
+			<Item Name="upload-output-w-bitfile.vi" Type="VI" URL="../../../MicroBlaze_AXI/mb_axi_64/host/actions/upload-output-w-bitfile.vi"/>
 		</Item>
 		<Item Name="Exports" Type="Folder">
 			<Property Name="NI.SortType" Type="Int">3</Property>
@@ -21609,7 +21610,6 @@ gpio_rtl_0_tri_oNumberOfSyncRegistersForReadInProject=Auto;resource=/UserRTL_mic
 				</Item>
 			</Item>
 		</Item>
-		<Item Name="upload-output-w-bitfile.vi" Type="VI" URL="../../../MicroBlaze_AXI/mb_axi_64/host/actions/upload-output-w-bitfile.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Application Directory.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/file.llb/Application Directory.vi"/>
@@ -21674,6 +21674,9 @@ gpio_rtl_0_tri_oNumberOfSyncRegistersForReadInProject=Auto;resource=/UserRTL_mic
 			<Item Name="LabSFTP.dll" Type="Document" URL="../References/References/LabSFTP.dll"/>
 			<Item Name="Renci.SshNet.dll" Type="Document" URL="../References/References/Renci.SshNet.dll"/>
 			<Item Name="LabSSH.dll" Type="Document" URL="../References/References/LabSSH.dll"/>
+			<Item Name="LabSFTP.lvlib" Type="Library" URL="../../../MicroBlaze_AXI/mb_axi_64/host/libraries/SFTP Library/LabSFTP.lvlib"/>
+			<Item Name="LabSFTP.dll" Type="Document" URL="../../../MicroBlaze_AXI/mb_axi_64/host/libraries/References/LabSFTP.dll"/>
+			<Item Name="Renci.SshNet.dll" Type="Document" URL="../../../MicroBlaze_AXI/mb_axi_64/host/libraries/References/Renci.SshNet.dll"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build">
 			<Item Name="FPGATester" Type="EXE">
