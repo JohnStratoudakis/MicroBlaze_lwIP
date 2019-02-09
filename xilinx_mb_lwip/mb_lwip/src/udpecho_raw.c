@@ -56,32 +56,41 @@
 
 static struct udp_pcb *udpecho_raw_pcb;
 
-void udpecho_raw_send(char *data, u16_t datalen)
-{
-    int i = 0;
+static ip_addr_t local_addr;
+static u16_t local_port;
 
+void udpecho_raw_send(ip_addr_t destIp, u16 destPort, char *payload, u16_t payload_len)
+{
     printf("\nudpecho_raw_send\n");
 
-    XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0001);
-    XGpio_DiscreteWrite(&gpio_2, 2, datalen);
+//    for ( i = 0; i < datalen; i++)
+//    {
+//        printf("0x%02x, ", (unsigned char)data[i]);
+//        if( (i+1) % 8 == 0)
+//            printf("\n");
+//    }
 
-    for ( i = 0; i < datalen; i++)
-    {
-        XGpio_DiscreteWrite(&gpio_2, 2, data[i]);
-        printf("0x%02x, ", (unsigned char)data[i]);
-        if( (i+1) % 8 == 0)
-            printf("\n");
+    printf("destination address: %d.%d.%d.%d\n",
+			(destIp.addr >>  0) & 0xFF, (destIp.addr >>  8) & 0xFF,
+			(destIp.addr >> 16) & 0xFF, (destIp.addr >> 24) & 0xFF);
+    printf("payload_len = %d %x\n", payload_len, payload_len);
+
+    struct pbuf *p;
+    //p = pbuf_alloc(PBUF_RAW, payload_len, PBUF_RAM);
+    p = pbuf_alloc(PBUF_TRANSPORT, payload_len, PBUF_RAM);
+
+    char *outPayload = (char *) p->payload;
+    for(int i=0; i<payload_len; i++){
+    	int index = 0;
+    	printf("Setting index %d to %d (0x%x)\n", (index + i), payload[i], payload[i]);
+    	*(outPayload + index + i) = payload[i];
     }
 
-    struct pbuf p;
-    p.len = datalen;
-    p.next = NULL;
-    p.payload = data;
-    XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0002);
-    udp_send(udpecho_raw_pcb, &p);
+    err_t status = udp_sendto(udpecho_raw_pcb, p, &destIp, destPort);
 
-    XGpio_DiscreteWrite(&gpio_2, 2, 0xBBBB0003);
-    printf("\nudpecho_raw_send().end\n");
+    u8_t free_status = pbuf_free(p);
+    printf("udp_sendto() -> free_status: %d %i\n", free_status, free_status);
+    printf("udp_sendto() -> status: %d %i\n", status, status);
 }
 
 static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
@@ -100,41 +109,96 @@ static void udpecho_raw_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
         {
             if (XLlFifo_iTxVacancy(&fifo_2))
             {
-                int i = 0;
-                for ( i = 0; i < tot_len; i++)
-                {
-                    printf("0x%02x, ", (unsigned char)data[i]);
-                    if( (i+1) % 8 == 0)
-                        printf("\n");
-                }
-                printf("\n");
+            	// Generate a small/custom header
+            	u32 header_len = 16;
+            	char header[16];
+            	int i=0;
 
-                // Send up to labview host
-//                printf("\nSending to host %d bytes\n", tot_len);
-//                XLlFifo_Write(&fifo_2, data, tot_len);
-//                XLlFifo_iTxSetLen(&fifo_2, tot_len);
+            	for(i=0; i<16; i++) {
+            		header[i] = 0;
+            	}
+            	header[ 0] = 1; // Session #1
+            	header[ 1] = (addr->addr >>   0) & 0xFF; // IP Address 0
+            	header[ 2] = (addr->addr >>   8) & 0xFF; // IP Address 1
+            	header[ 3] = (addr->addr >>  16) & 0xFF; // IP Address 2
+            	header[ 4] = (addr->addr >>  24) & 0xFF; // IP Address 3
+            	header[ 5] = port; // Port 0
+            	header[ 6] = port; // Port 1
+            	header[ 7] = (local_addr.addr >>   0) & 0xFF; // IP Address 0
+				header[ 8] = (local_addr.addr >>   8) & 0xFF; // IP Address 1
+				header[ 9] = (local_addr.addr >>  16) & 0xFF; // IP Address 2
+				header[10] = (local_addr.addr >>  24) & 0xFF; // IP Address 3
+				header[11] = local_port; // Port 0
+				header[12] = local_port; // Port 1
 
-                // Send it back to the sender as quick check
-                //printf("\nudp_sendto() port 0x%x\n", port);
-                //printf("\tport %d\n", port);
-                //u16_t revPort = ((port & 0xFF00) >> 8) || ((port & 0xFF) << 8);
-                //printf("\tport (Byte-Order Reversed) %u\n", revPort);
-                u16_t revPort = 0x89F0;
-                printf("udp_sendto()\n");
-                printf("revPort (Byte-Order Reversed) %u\n", revPort);
+            	printf("RX_PACKET - Spot #1\n");
+
+            	// Write header length
+            	XLlFifo_Write(&fifo_2, &header_len, 4);
+            	// Write header
+            	XLlFifo_Write(&fifo_2, header, header_len);
+
+            	u32 payload_len = tot_len;
+            	// Write payload
+            	static char payload[MAX_FRAME_SIZE];
+
+            	for(i=0; i<payload_len; i++) {
+            		payload[i] = data[i];
+            	}
+            	if(payload_len % 4 != 0) {
+					u32 padding = 0;
+					padding = (4 - (payload_len %4));
+					payload_len += padding;
+					for(i=tot_len; i<payload_len; i++) {
+						payload[i] = '\0';
+					}
+					printf("Adding padding %d bytes\n", padding);
+				}
+            	// Write payload length
+				XLlFifo_Write(&fifo_2, &payload_len, 4);
+				XLlFifo_Write(&fifo_2, payload, payload_len);
+
+            	// Append payload length, followed by payload
+            	//u32 entire_len = (4 + header_len) + (4 + payload_len);
+            	u32 entire_len = (4 + header_len) + (4 + payload_len);
+
+            	XLlFifo_iTxSetLen(&fifo_2, entire_len);
+
+            	printf("udpecho_raw_recv - header_len=%lu\n", header_len);
+            	printf("udpecho_raw_recv - entire_len=%lu\n", entire_len);
+            	printf("udpecho_raw_recv - payload_len=%lu\n", payload_len);
+
+//                int i = 0;
+//                for ( i = 0; i < tot_len; i++)
+//                {
+//                    printf("0x%02x, ", (unsigned char)data[i]);
+//                    if( (i+1) % 8 == 0)
+//                        printf("\n");
+//                }
+//                printf("\n");
+
+                // Dump port - source port
+                printf("port %d\n", port);
+//                printf("port 0x%x\n", port);
+//                u16_t revPort = ((port & 0xFF00) >> 8) | ((port & 0xFF) << 8);
+//                printf("port (Byte-Order Reversed) %u\n", revPort);
+//                printf("port (Byte-Order Reversed) 0x%x\n", revPort);
+
+                // Dump addr
+                // 10.0.1.100
                 printf("addr: 0x%x\n", addr->addr);
                 printf("addr: %d.%d.%d.%d\n",
                 		(addr->addr >>  0) & 0xFF, (addr->addr >>  8) & 0xFF,
 						(addr->addr >> 16) & 0xFF, (addr->addr >> 24) & 0xFF);
-                printf("upcb->local_ip.addr: %d.%d.%d.%d\n",
-                        (upcb->local_ip.addr >>  0) & 0xFF, (upcb->local_ip.addr >>  8) & 0xFF,
-                		(upcb->local_ip.addr >> 16) & 0xFF, (upcb->local_ip.addr >> 24) & 0xFF);
-                printf("upcb->remote_ip.addr: %d.%d.%d.%d\n",
-                        (upcb->remote_ip.addr >>  0) & 0xFF, (upcb->remote_ip.addr >>  8) & 0xFF,
-                        (upcb->remote_ip.addr >> 16) & 0xFF, (upcb->remote_ip.addr >> 24) & 0xFF);
+//                printf("upcb->local_ip.addr: %d.%d.%d.%d\n",
+//                        (upcb->local_ip.addr >>  0) & 0xFF, (upcb->local_ip.addr >>  8) & 0xFF,
+//                		(upcb->local_ip.addr >> 16) & 0xFF, (upcb->local_ip.addr >> 24) & 0xFF);
+//                printf("upcb->remote_ip.addr: %d.%d.%d.%d\n",
+//                        (upcb->remote_ip.addr >>  0) & 0xFF, (upcb->remote_ip.addr >>  8) & 0xFF,
+//                        (upcb->remote_ip.addr >> 16) & 0xFF, (upcb->remote_ip.addr >> 24) & 0xFF);
 
 				//IPADDR2_COPY(&hdr->dipaddr, &hdr->sipaddr);
-                udp_sendto(upcb, p, addr, revPort);
+//                udp_sendto(upcb, p, addr, revPort);
             }
         } else {
         	printf("tot_len == 0\n");
@@ -154,10 +218,18 @@ void udpecho_raw_init(void)
     {
         err_t err;
 
-        err = udp_bind(udpecho_raw_pcb, IPADDR_ANY, 35312);
+        local_port = 35312;
+        err = udp_bind(udpecho_raw_pcb, IPADDR_ANY, local_port);
         if (err == ERR_OK)
         {
         	printf("Calling udp_recv to set up callback function\n");
+        	local_addr = udpecho_raw_pcb->local_ip;
+			local_port = udpecho_raw_pcb->local_port;
+			printf("local_port %d\n", local_port);
+			printf("local_addr: 0x%x\n", local_addr.addr);
+			printf("local_addr: %d.%d.%d.%d\n",
+					(local_addr.addr >>  0) & 0xFF, (local_addr.addr >>  8) & 0xFF,
+					(local_addr.addr >> 16) & 0xFF, (local_addr.addr >> 24) & 0xFF);
             udp_recv(udpecho_raw_pcb, udpecho_raw_recv, NULL);
         }
         else

@@ -31,6 +31,6 @@
 #define LWIP_TCPECHO_RAW_H
 
 void tcpecho_raw_init(void);
-void udpecho_raw_send(char *data, u16_t datalen);
+//void tcpecho_raw_send(char *data, u16_t datalen);
 
 #endif /* LWIP_TCPECHO_RAW_H */

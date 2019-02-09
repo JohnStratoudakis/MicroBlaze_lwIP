@@ -34,7 +34,11 @@
 #ifndef LWIP_UDPECHO_RAW_H
 #define LWIP_UDPECHO_RAW_H
 
+#include "ipv4/lwip/ip_addr.h"
+#include <xil_types.h>
+
 void udpecho_raw_init(void);
+void udpecho_raw_send(ip_addr_t destIp, u16 destPort, char *payload, u16_t payload_len);
 
 #endif /* LWIP_UDPECHO_RAW_H */
 

@@ -104,7 +104,6 @@
 #define TAPIF_DEBUG LWIP_DBG_OFF
 #endif
 
-
 struct tapif {
 	/* Add whatever per-interface state that is needed here. */
 	int fd;
@@ -215,6 +214,10 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 
     outLen = p->tot_len;
     printf(" Sending out a packet of length: %d\n", outLen);
+    printf("PARAMS\n");
+    printf("p->len: %d (0x%x)\n", p->len, p->len);
+    printf("p->tot_len: %d (0x%x)\n", p->tot_len);
+    printf("p->type: %d (0x%x)\n", p->type);
     if( outLen % frame_alignment != 0)
     {
         int rem = outLen % frame_alignment;
@@ -233,7 +236,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     }
 
     /* initiate transfer(); */
-    pbuf_copy_partial(p, buf, p->tot_len, 0);
+    pbuf_copy_partial(p, buf, p->len, 0);
     printf(" After calling pbuf_copy_partial\n");
 
     // TOOD: Make sure output is rounded up to the nearest 32-bit word
