@@ -37,20 +37,7 @@
 #include "ipv4/lwip/ip_addr.h"
 #include <xil_types.h>
 
-void udpecho_raw_init(void);
+void udpecho_raw_init(u16_t listen_port);
 void udpecho_raw_send(ip_addr_t destIp, u16 destPort, char *payload, u16_t payload_len);
 
 #endif /* LWIP_UDPECHO_RAW_H */
-
-/*
- * udpecho_raw_send
- *      calls udp_send
- * udpecho_raw_recv
- *      puts data on to the FIFO for reading by the FPGA
- * write a function that can be called from main that can send
- *   data out the udp after being read from a FIFO
- *   using udp_sendto
- *
- *
- *
- */

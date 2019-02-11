@@ -2,6 +2,10 @@
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
  * All rights reserved.
  *
+ * Based on examples provided by
+ * Iwan Budi Kusnanto <ibk@labhijau.net> (https://gist.github.com/iwanbk/1399729)
+ * Juri Haberland <juri@sapienti-sat.org> (https://lists.gnu.org/archive/html/lwip-users/2007-06/msg00078.html)
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
@@ -30,7 +34,10 @@
 #ifndef LWIP_TCPECHO_RAW_H
 #define LWIP_TCPECHO_RAW_H
 
-void tcpecho_raw_init(void);
-//void tcpecho_raw_send(char *data, u16_t datalen);
+#include "ipv4/lwip/ip_addr.h"
+#include <xil_types.h>
+
+void tcpecho_raw_init(u16_t listen_port);
+void tcpecho_raw_user_send(ip_addr_t destIp, u16 destPort, char *payload, u16_t payload_len);
 
 #endif /* LWIP_TCPECHO_RAW_H */
