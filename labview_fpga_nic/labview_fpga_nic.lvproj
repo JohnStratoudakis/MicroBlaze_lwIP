@@ -1088,6 +1088,7 @@ gpio_rtl_0_tri_oNumberOfSyncRegistersForReadInProject=Auto;resource=/d_microblaz
 			<Item Name="Pad-And-Convert.vi" Type="VI" URL="../Utilities/Pad-And-Convert.vi"/>
 			<Item Name="Convert-U64-to-String.vi" Type="VI" URL="../Utilities/Convert-U64-to-String.vi"/>
 			<Item Name="Write-U64-for-UART.vi" Type="VI" URL="../Utilities/Write-U64-for-UART.vi"/>
+			<Item Name="Parse-Incoming-Packet.vi" Type="VI" URL="../Utilities/Parse-Incoming-Packet.vi"/>
 		</Item>
 		<Item Name="References" Type="Folder">
 			<Item Name="References" Type="Folder"/>
@@ -21695,7 +21696,7 @@ gpio_rtl_0_tri_oNumberOfSyncRegistersForReadInProject=Auto;resource=/UserRTL_mic
 				<Property Name="Bld_previewCacheID" Type="Str">{365F24AB-F67F-49BD-96F6-BEC97136D379}</Property>
 				<Property Name="Bld_userLogFile" Type="Path">../builds/labview_fpga_nic/FPGATester/labview_fpga_nic_FPGATester_log.txt</Property>
 				<Property Name="Bld_userLogFile.pathType" Type="Str">relativeToCommon</Property>
-				<Property Name="Bld_version.build" Type="Int">222</Property>
+				<Property Name="Bld_version.build" Type="Int">233</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">FPGATester.exe</Property>
 				<Property Name="Destination[0].path" Type="Path">../builds/NI_AB_PROJECTNAME/FPGATester/FPGATester.exe</Property>
