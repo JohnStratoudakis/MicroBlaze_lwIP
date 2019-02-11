@@ -239,6 +239,7 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     es = (struct tcpecho_raw_state *)arg;
     if (p == NULL)
     {
+    	printf("tcpecho_raw_recv - REMOTE HOST CLOSED\n");
         /* remote host closed connection */
         es->state = ES_CLOSING;
         if(es->p == NULL)
@@ -256,6 +257,7 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     else
     if(err != ERR_OK)
     {
+    	printf("tcpecho_raw_recv - != ERR_OK\n");
         /* cleanup, for unknown reason */
         if (p != NULL)
         {
@@ -266,6 +268,7 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     else
     if(es->state == ES_ACCEPTED)
     {
+    	printf("tcpecho_raw_recv - ES_ACCEPTED\n");
         /* first data chunk in p->payload */
         es->state = ES_RECEIVED;
         /* store reference to incoming pbuf (chain) */
@@ -279,13 +282,14 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
         /* read some more data */
         if(es->p == NULL)
         {
+        	printf("tcpecho_raw_recv - ES_RECEIVED-1\n");
             es->p = p;
             tcpecho_raw_send(tpcb, es);
         }
         else
         {
             struct pbuf *ptr;
-
+            printf("tcpecho_raw_recv - ES_RECEIVED-2\n");
             /* chain pbufs to the end of what we recv'ed previously  */
             ptr = es->p;
             pbuf_cat(ptr,p);
@@ -294,11 +298,13 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     }
     else
     {
+    	printf("tcpecho_raw_recv - TRASH_DATA\n");
         /* unkown es->state, trash data  */
         tcp_recved(tpcb, p->tot_len);
         pbuf_free(p);
         ret_err = ERR_OK;
     }
+
     return ret_err;
 }
 
@@ -323,6 +329,7 @@ static err_t tcpecho_raw_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
     es = (struct tcpecho_raw_state *)mem_malloc(sizeof(struct tcpecho_raw_state));
     if (es != NULL)
     {
+    	printf("tcpecho_raw_accept - es != NULL\n");
         es->state = ES_ACCEPTED;
         es->pcb = newpcb;
         es->retries = 0;
@@ -337,6 +344,7 @@ static err_t tcpecho_raw_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
     }
     else
     {
+    	printf("tcpecho_raw_accept - es == NULL\n");
         ret_err = ERR_MEM;
     }
     return ret_err;
