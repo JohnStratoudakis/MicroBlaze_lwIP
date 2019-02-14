@@ -86,23 +86,6 @@ static void tcpecho_raw_free(struct tcpecho_raw_state *es)
     }
 }
 
-void tcpecho_raw_user_send(ip_addr_t destIp, u16 destPort, char *payload, u16_t payload_len)
-{
-	printf("\ntcpecho_raw_user_send() called\n");
-	printf("destination address: %d.%d.%d.%d\n",
-				(destIp.addr >>  0) & 0xFF, (destIp.addr >>  8) & 0xFF,
-				(destIp.addr >> 16) & 0xFF, (destIp.addr >> 24) & 0xFF);
-	printf("destPort %d\n", destPort);
-	printf("payload_len = %d %x\n", payload_len, payload_len);
-	for (int i = 0; i < payload_len; i++)
-	{
-		printf("0x%02x, ", (unsigned char)payload[i]);
-		if( (i+1) % 8 == 0)
-			printf("\n");
-	}
-
-}
-
 static void tcpecho_raw_close(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 {
     printf("tcpecho_raw_close()\n");
@@ -132,6 +115,7 @@ static void tcpecho_raw_send(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
         wr_err = tcp_write(tpcb, ptr->payload, ptr->len, 1);
         if (wr_err == ERR_OK)
         {
+        	printf("tcpecho_raw_send - write okay\n");
             u16_t plen;
 
             plen = ptr->len;
@@ -151,11 +135,13 @@ static void tcpecho_raw_send(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
         if(wr_err == ERR_MEM)
         {
             /* we are low on memory, try later / harder, defer to poll */
+        	printf("tcpecho_raw_send - low memory\n");
             es->p = ptr;
         }
         else
         {
             /* other problem ?? */
+        	printf("tcpecho_raw_send - other error (%d)\n", wr_err);
         }
     }
 }
@@ -284,7 +270,14 @@ static err_t tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
         {
         	printf("tcpecho_raw_recv - ES_RECEIVED-1\n");
             es->p = p;
-            tcpecho_raw_send(tpcb, es);
+            printf("Received %d bytes of data\n", es->p->len);
+            char *inPayload = (char *)es->p->payload;
+            for(int i=0; i<es->p->len; i++) {
+            	printf("0x%02x, ", inPayload[i]);
+				if( (i+1) % 8 == 0)
+					printf("\n");
+            }
+//            tcpecho_raw_send(tpcb, es);
         }
         else
         {
@@ -348,6 +341,41 @@ static err_t tcpecho_raw_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
         ret_err = ERR_MEM;
     }
     return ret_err;
+}
+
+void tcpecho_raw_user_send(ip_addr_t destIp, u16 destPort, char *payload, u16_t payload_len)
+{
+	printf("\ntcpecho_raw_user_send() called\n");
+	printf("destination address: %d.%d.%d.%d\n",
+				(destIp.addr >>  0) & 0xFF, (destIp.addr >>  8) & 0xFF,
+				(destIp.addr >> 16) & 0xFF, (destIp.addr >> 24) & 0xFF);
+	printf("destPort %d\n", destPort);
+	printf("payload_len = %d (0x%x)\n", payload_len, payload_len);
+	for (int i = 0; i < payload_len; i++)
+	{
+		printf("0x%02x, ", (unsigned char)payload[i]);
+		if( (i+1) % 8 == 0)
+			printf("\n");
+	}
+	printf("\n");
+
+	struct tcpecho_raw_state *es;
+	es = (struct tcpecho_raw_state *)tcpecho_raw_pcb->callback_arg;
+
+	struct pbuf *p;
+	p = pbuf_alloc(PBUF_TRANSPORT, payload_len, PBUF_RAW);
+	char *outPayload = (char *)p->payload;
+	for(int i=0; i<payload_len; i++) {
+		*(outPayload + i) = payload[i];
+	}
+
+//	es = (struct tcpecho_raw_state *)malloc(sizeof(struct tcpecho_raw_state));
+	es->p = p;
+//	es->state = ES_ACCEPTED;
+//	es->retries = 5;
+//	es->pcb = tcpecho_raw_pcb;
+	tcpecho_raw_send(tcpecho_raw_pcb, es);
+	//            tcpecho_raw_send(tcpecho_raw_pcb, es);
 }
 
 void tcpecho_raw_init(u16_t listen_port)
