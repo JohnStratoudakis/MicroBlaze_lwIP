@@ -212,7 +212,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
         return ERR_OK;
     }
 
-    outLen = p->tot_len;
+//    outLen = p->tot_len;
+    outLen = p->len;
     printf(" Sending out a packet of length: %d\n", outLen);
     printf("PARAMS\n");
     printf("p->len: %d (0x%x)\n", p->len, p->len);

@@ -34,6 +34,7 @@
 
 #include "udpecho_raw.h"
 #include "tcpecho_raw.h"
+#include "tcp_client.h"
 
 static ip_addr_t ipaddr, netmask, gw;
 
@@ -41,18 +42,29 @@ int main()
 {
     struct netif netif;
 
-    // TODO: You can manually override the ip address, gateway and netmask
-    // here.  Improvement would be nice.
-    u16_t port = 35312;
+    ip_addr_t connect_ip;
+    u16_t connect_port = 35312;
+
     IP4_ADDR(&gw, 10, 0, 1, 1);
     IP4_ADDR(&ipaddr, 10, 0, 1, 101);
+    IP4_ADDR(&connect_ip, 10, 0, 1, 100);
     IP4_ADDR(&netmask, 255, 0, 0, 0);
 
     u32 ret = init_all();
 
-    printf("Good afternoon from mb_lwip, today is Sunday, February 10th, 2019\n");
-    printf("The time is now 8:53 PM\n");
+    printf("Good afternoon from mb_lwip, today is Thursday, March 7th, 2019\n");
+    printf("The time is now 11:52 AM\n");
     printf("init_all() == %d\n", (int)ret);
+
+    printf("Parameters:\n");
+    printf("IP_DEBUG=%d\n", IP_DEBUG);
+    printf("LWIP_DBG_TYPES_ON=%d\n", LWIP_DBG_TYPES_ON);
+    printf("LWIP_DBG_ON=%d\n", LWIP_DBG_ON);
+    printf("LWIP_DBG_MASK_LEVEL=%d\n", LWIP_DBG_MASK_LEVEL);
+    printf("LWIP_DBG_MIN_LEVEL=%d\n", LWIP_DBG_MIN_LEVEL);
+    printf("LWIP_DBG_HALT=%d\n", LWIP_DBG_HALT);
+
+    LWIP_DEBUGF(IP_DEBUG, ("LWIP_DEBUGF_TEST\n"));
 
     lwip_init();
 
@@ -61,8 +73,8 @@ int main()
     printf("CHECKPOINT-1\n");
     netif_set_default(&netif);
 
-    udpecho_raw_init(port);
-    tcpecho_raw_init(port);
+    //udpecho_raw_init(connect_port);
+    //tcpecho_raw_init(port);
 
     netif_set_up(&netif);
     printf("CHECKPOINT-2\n");
@@ -98,6 +110,7 @@ int main()
                 printf("Identified parameters\n");
                 u8 header_len = buffer[0];
                 u8 session_id = buffer[1];
+                u8 command = buffer[8];
                 u16 destPort = (buffer[6] << 8 & 0xFF00) | (buffer[7] & 0xFF);
                 ip_addr_t destIp;
                 destIp.addr = (buffer [2]) | (buffer [3] << 8) |
@@ -105,6 +118,7 @@ int main()
                 u16_t payload_len = (buffer[header_len + 1] & 0xFF >> 8) | (buffer[header_len + 2]);
                 printf("header_len: %d\n", header_len);
                 printf("session #: %d\n", session_id);
+                printf("command: %d\n", command);
                 printf("destination address: %d.%d.%d.%d\n",
                             (destIp.addr >>  0) & 0xFF, (destIp.addr >>  8) & 0xFF,
                				(destIp.addr >> 16) & 0xFF, (destIp.addr >> 24) & 0xFF);
@@ -124,14 +138,22 @@ int main()
 				}
 				printf("\n");
 
-				printf("Calling udpecho_raw_send\n");
+				printf("Passing command down\n");
 				if(session_id == 1) {
-					printf("Sending to UDP Session\n");
+					printf("Sending to UDP Session (session_id = 1)\n");
 					udpecho_raw_send(destIp, destPort, payload, payload_len);
 				} else if (session_id == 2) {
-					printf("Sending to TCP Session\n");
+					printf("Sending to TCP Session (session_id = 2)\n");
+					if(command == 0) {
+						tcp_client_connect(connect_ip, connect_port);
+					} else if(command == 1) {
+						tcp_client_send(payload, payload_len);
+					} else if(command == 2) {
+						// Not implemented yet
+					} else if(command == 3) {
+						tcp_client_close();
+					}
 				}
-
         	}
     	}
     }
